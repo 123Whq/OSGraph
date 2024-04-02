@@ -55,14 +55,14 @@ export const ProjectSearch: React.FC<{
     });
   }, []);
 
-  const switchName = (parameterName: string) => {
+  const switchName = (parameterName: string, parameterValue: string) => {
     switch (parameterName) {
       case "start_timestamp":
         return new Date().setMonth(new Date().getMonth() - 1);
       case "end_timestamp":
         return new Date().getTime();
       default:
-        return parameterName;
+        return parameterValue;
     }
   };
 
@@ -74,9 +74,10 @@ export const ProjectSearch: React.FC<{
         valueType: string;
       }) => {
         const { parameterName, parameterValue, valueType } = item;
+        console.log(parameterValue, value);
         return {
-          parameterName: switchName(parameterName),
-          parameterValue: !parameterValue ? value : parameterValue,
+          parameterName: parameterName,
+          parameterValue: switchName(parameterName, parameterValue || value),
           valueType: valueType,
         };
       }
