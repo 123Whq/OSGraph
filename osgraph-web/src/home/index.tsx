@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useTranslation } from "react-i18next";
 import styles from "./index.module.less";
-import { ProjectSearch } from "../ components/project-search";
-import { getListQueryTemplate } from "../services/homePage";
+import { ProjectSearch } from "../components";
 import React, { useEffect, useState } from "react";
 
 export default () => {
@@ -211,7 +210,12 @@ export default () => {
             />
           </a>
 
-          <div className={styles["bottom-link"]}>
+          <div
+            className={styles["bottom-link"]}
+            onClick={() => {
+              window.open("https://github.com/TuGraph-family/OSGraph");
+            }}
+          >
             <img
               src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*BnJ2TZbC8ckAAAAAAAAAAAAADu3UAQ/original"
               alt=""

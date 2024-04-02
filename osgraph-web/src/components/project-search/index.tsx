@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { Select, ConfigProvider, theme } from "antd";
+import { Select, ConfigProvider, theme, message } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import {
   getExecuteQueryTemplate,
@@ -14,14 +14,15 @@ export const ProjectSearch: React.FC<{
   needFixed: boolean;
   debounceTimeout?: number;
   defaultStyle?: boolean;
-}> = ({ needFixed, debounceTimeout = 800, defaultStyle }) => {
+  onSearch?: (searchdata: any) => void;
+}> = ({ needFixed, debounceTimeout = 800, defaultStyle, onSearch }) => {
   const navigate = useNavigate();
-  const [queryList, setQueryList] = useState<object>([]);
+  const [queryList, setQueryList] = useState<any[]>([]);
   const [state, setState] = useState<{
     querySource: string;
-    templateParameterList: object;
-    textQuery: object;
-    warehouseValue: string;
+    templateParameterList: any[];
+    textQuery: any[];
+    warehouseValue: string | null;
     templateId: string;
   }>({
     querySource: "github_repo",
@@ -128,7 +129,13 @@ export const ProjectSearch: React.FC<{
       ),
     }).then((res) => {
       if (res?.success) {
+        if (defaultStyle) {
+          onSearch?.(res.data);
+          return;
+        }
         navigate("/result", { state: res.data });
+      } else {
+        message.error(res.message);
       }
     });
   };
@@ -153,7 +160,7 @@ export const ProjectSearch: React.FC<{
           suffixIcon={<DownOutlined className={styles["project-icon"]} />}
           onChange={handleProjectChange}
         >
-          {queryList?.map((item) => {
+          {queryList.map((item) => {
             return (
               <Select.Option
                 value={item.templateType}
