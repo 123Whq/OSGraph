@@ -483,7 +483,6 @@ const MOCKDAT = {
 export default () => {
   const location = useLocation();
   const [graphData, setGraphData] = React.useState(location.state);
-  console.log(graphData, "graphData");
   const { t } = useTranslation();
   const [open, setIsOpen] = React.useState(false);
   const [shareLink, setShareLink] = React.useState("");

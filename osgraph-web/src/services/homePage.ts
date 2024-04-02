@@ -1,5 +1,6 @@
 import request from "umi-request";
-const HTTP_SERVICE_URL = `${window.location.protocol}//${window.location.hostname}:9000`;
+// const HTTP_SERVICE_URL = `${window.location.protocol}//${window.location.hostname}:9000`;
+const HTTP_SERVICE_URL = "http://47.108.139.230:9000";
 
 export const getListQueryTemplate = async () => {
   const response = await request(
@@ -49,8 +50,5 @@ export const getExecuteQueryTemplate = async (params: {
     }
   );
 
-  if (!response?.success) {
-    return [];
-  }
   return response;
 };

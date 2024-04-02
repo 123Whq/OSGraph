@@ -20,6 +20,11 @@ export default () => {
 
   return (
     <div className={styles["home"]}>
+      <img
+        className={styles["logo"]}
+        src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*YzqCQbdW7nUAAAAAAAAAAAAADu3UAQ/original"
+        alt=""
+      />
       <div className={styles["home-header"]}>
         <video
           src="https://mass-office.alipay.com/huamei_koqzbu/afts/file/FqCfRa9wOpwAAAAAAAAAABAADnV5AQBr"
@@ -36,6 +41,7 @@ export default () => {
           />
           <ProjectSearch needFixed={needFixed} />
           <div className={styles["tuGraph-icon"]}>
+            <p>Powered by</p>
             <img
               src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*fFhhRqgrUNIAAAAAAAAAAAAADu3UAQ/original"
               alt=""
