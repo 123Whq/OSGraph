@@ -39,7 +39,7 @@ export const GraphView = React.memo(
         node: {
           style: {
             size: (d) => d.size,
-            labelText: (d) => d.properties.name,
+            labelText: (d) => d?.properties?.name,
             iconHeight: (d) => d.size / 2,
             iconWidth: (d) => d.size / 2,
             iconSrc: (d) => ICON_MAPPING[d.nodeType],
@@ -52,7 +52,7 @@ export const GraphView = React.memo(
         edge: {
           style: {
             type: (item) => item.type || "line",
-            labelText: (d) => `${d.edgeType}\n${d.properties.ids.length}个`,
+            labelText: (d) => `${d?.edgeType}\n${d?.properties?.count || 0}个`,
             endArrow: true,
             labelBackgroundFill: "#fff",
             labelBackground: true,
