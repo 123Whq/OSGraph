@@ -10,10 +10,10 @@ import Country from "../../assets/country.svg";
 import Project from "../../assets/project.svg";
 
 const ICON_MAPPING = {
-  org: Org,
-  user: User,
+  organization: Org,
+  github_user: User,
   country: Country,
-  project: Project,
+  github_repo: Project,
 };
 
 interface IProps {
@@ -39,7 +39,7 @@ export const GraphView = React.memo(
         node: {
           style: {
             size: (d) => d.size,
-            labelText: (d) => d.label,
+            labelText: (d) => d.properties.name,
             iconHeight: (d) => d.size / 2,
             iconWidth: (d) => d.size / 2,
             iconSrc: (d) => ICON_MAPPING[d.nodeType],
@@ -52,7 +52,7 @@ export const GraphView = React.memo(
         edge: {
           style: {
             type: (item) => item.type || "line",
-            labelText: (d) => d.label,
+            labelText: (d) => `${d.edgeType}\n${d.properties.ids.length}个`,
             endArrow: true,
             labelBackgroundFill: "#fff",
             labelBackground: true,
