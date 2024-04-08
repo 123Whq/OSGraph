@@ -19,7 +19,7 @@ export const ProjectSearch: React.FC<{
   graphSearchValue?: string;
   defaultStyle?: boolean;
   onSearch?: (searchData: any) => void;
-  templateType?: string;
+  templateType?: string | any;
 }> = ({
   needFixed,
   debounceTimeout = 800,
@@ -63,13 +63,24 @@ export const ProjectSearch: React.FC<{
     searchValue,
   } = state;
 
-  const placeholderName = {
-    REPO_CONTRIBUTE: "请输入 GitHub 仓库名称",
-    REPO_ECOLOGY: "请输入 GitHub 仓库名称",
-    REPO_COMMUNITY: "请输入 GitHub 仓库名称",
-    ACCT_ACTIVITY: "请输入 GitHub 账户名称",
-    ACCT_PARTNER: "请输入 GitHub 账户名称",
-    ACCT_INTEREST: "请输入 GitHub 账户名称",
+  const placeholderName = (
+    value:
+      | "REPO_CONTRIBUTE"
+      | "REPO_ECOLOGY"
+      | "REPO_COMMUNITY"
+      | "ACCT_ACTIVITY"
+      | "ACCT_PARTNER"
+      | "ACCT_INTEREST"
+  ) => {
+    const placeholder = {
+      REPO_CONTRIBUTE: "请输入 GitHub 仓库名称",
+      REPO_ECOLOGY: "请输入 GitHub 仓库名称",
+      REPO_COMMUNITY: "请输入 GitHub 仓库名称",
+      ACCT_ACTIVITY: "请输入 GitHub 账户名称",
+      ACCT_PARTNER: "请输入 GitHub 账户名称",
+      ACCT_INTEREST: "请输入 GitHub 账户名称",
+    };
+    return placeholder[value];
   };
 
   const styleObj: React.CSSProperties = {
@@ -100,7 +111,7 @@ export const ProjectSearch: React.FC<{
       setState({
         ...state,
         projectValue: templateType,
-        placeholderValue: placeholderName[templateType],
+        placeholderValue: placeholderName(templateType),
       });
     }
   }, [templateType]);
@@ -135,7 +146,7 @@ export const ProjectSearch: React.FC<{
     );
   };
 
-  const handleProjectChange = (value: any | string, item: any) => {
+  const handleProjectChange = (value: string | any, item: any) => {
     setState({
       ...state,
       querySource: item.data.querySource,
@@ -144,7 +155,7 @@ export const ProjectSearch: React.FC<{
       warehouseValue: null,
       textQuery: [],
       projectValue: value,
-      placeholderValue: placeholderName[value],
+      placeholderValue: placeholderName(value),
     });
   };
 
