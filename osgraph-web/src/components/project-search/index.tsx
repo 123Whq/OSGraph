@@ -13,9 +13,24 @@ import styles from "./index.module.less";
 export const ProjectSearch: React.FC<{
   needFixed: boolean;
   debounceTimeout?: number;
+  graphWarehouseValue?: string;
+  graphProjectValue?: string;
+  graphQuerySource?: string;
+  graphSearchValue?: string;
   defaultStyle?: boolean;
   onSearch?: (searchData: any) => void;
-}> = ({ needFixed, debounceTimeout = 800, defaultStyle, onSearch }) => {
+  templateType?: string;
+}> = ({
+  needFixed,
+  debounceTimeout = 800,
+  defaultStyle,
+  onSearch,
+  templateType,
+  graphWarehouseValue,
+  graphProjectValue,
+  graphQuerySource,
+  graphSearchValue,
+}) => {
   const navigate = useNavigate();
   const [queryList, setQueryList] = useState<any[]>([]);
   const [state, setState] = useState<{
@@ -24,12 +39,18 @@ export const ProjectSearch: React.FC<{
     textQuery: any[];
     warehouseValue: string | null;
     templateId: string;
+    projectValue: string;
+    placeholderValue: string;
+    searchValue: string;
   }>({
-    querySource: "github_repo",
+    querySource: graphQuerySource || "github_repo",
     templateParameterList: [],
     textQuery: [],
-    warehouseValue: null,
+    warehouseValue: graphWarehouseValue || null,
     templateId: "",
+    projectValue: graphProjectValue || "REPO_CONTRIBUTE",
+    placeholderValue: "请输入 GitHub 仓库名称",
+    searchValue: "",
   });
   const {
     querySource,
@@ -37,16 +58,29 @@ export const ProjectSearch: React.FC<{
     textQuery,
     warehouseValue,
     templateId,
+    projectValue,
+    placeholderValue,
+    searchValue,
   } = state;
 
+  const placeholderName = {
+    REPO_CONTRIBUTE: "请输入 GitHub 仓库名称",
+    REPO_ECOLOGY: "请输入 GitHub 仓库名称",
+    REPO_COMMUNITY: "请输入 GitHub 仓库名称",
+    ACCT_ACTIVITY: "请输入 GitHub 账户名称",
+    ACCT_PARTNER: "请输入 GitHub 账户名称",
+    ACCT_INTEREST: "请输入 GitHub 账户名称",
+  };
+
   const styleObj: React.CSSProperties = {
-    width: needFixed ? "calc(100% - 320px)" : defaultStyle ? "320px" : "650px",
+    width: needFixed ? "calc(100% - 320px)" : defaultStyle ? "400px" : "650px",
     position: needFixed ? "fixed" : "relative",
     top: needFixed ? 24 : 0,
     height: defaultStyle ? 32 : 56,
     marginLeft: defaultStyle ? 16 : 0,
     border: defaultStyle ? "1px solid #f2f2f2" : "1px solid #ffffff",
     background: defaultStyle ? "#ffffff" : "",
+    borderRadius: defaultStyle ? "6px" : "12px",
   };
 
   useEffect(() => {
@@ -54,6 +88,22 @@ export const ProjectSearch: React.FC<{
       setQueryList(res);
     });
   }, []);
+
+  useEffect(() => {
+    if (graphQuerySource && graphSearchValue) {
+      getExecuteFullTextQueryList(graphQuerySource, graphSearchValue);
+    }
+  }, [graphQuerySource, graphSearchValue]);
+
+  useEffect(() => {
+    if (templateType) {
+      setState({
+        ...state,
+        projectValue: templateType,
+        placeholderValue: placeholderName[templateType],
+      });
+    }
+  }, [templateType]);
 
   const switchName = (parameterName: string, parameterValue: string) => {
     switch (parameterName) {
@@ -85,7 +135,7 @@ export const ProjectSearch: React.FC<{
     );
   };
 
-  const handleProjectChange = (value: string, item: any) => {
+  const handleProjectChange = (value: any | string, item: any) => {
     setState({
       ...state,
       querySource: item.data.querySource,
@@ -93,19 +143,24 @@ export const ProjectSearch: React.FC<{
       templateId: item.data.id,
       warehouseValue: null,
       textQuery: [],
+      projectValue: value,
+      placeholderValue: placeholderName[value],
+    });
+  };
+
+  const getExecuteFullTextQueryList = (indexName: string, keyword: string) => {
+    getExecuteFullTextQuery({ indexName, keyword }).then((res) => {
+      setState({
+        ...state,
+        textQuery: res,
+        searchValue: keyword,
+      });
     });
   };
 
   const handelWarehouseSearch = useMemo(() => {
     const loadOptions = (value: string) => {
-      getExecuteFullTextQuery({ indexName: querySource, keyword: value }).then(
-        (res) => {
-          setState({
-            ...state,
-            textQuery: res,
-          });
-        }
-      );
+      getExecuteFullTextQueryList(querySource, value);
     };
     return debounce(loadOptions, debounceTimeout);
   }, [textQuery, debounceTimeout, querySource]);
@@ -135,7 +190,15 @@ export const ProjectSearch: React.FC<{
           onSearch?.(res.data);
           return;
         }
-        navigate("/result", { state: res.data });
+        navigate("/result", {
+          state: {
+            data: res.data,
+            warehouseValue: value,
+            projectValue,
+            querySource,
+            searchValue,
+          },
+        });
       } else {
         message.error(res.message);
       }
@@ -156,10 +219,24 @@ export const ProjectSearch: React.FC<{
             defaultStyle ? styles["default-project"] : styles["project-sel"]
           }
           popupClassName={defaultStyle ? "" : "project"}
-          defaultValue="项目贡献"
+          value={projectValue}
           placeholder="Borderless"
           variant="borderless"
-          suffixIcon={<DownOutlined className={styles["project-icon"]} />}
+          suffixIcon={
+            defaultStyle ? (
+              <img
+                src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*pwLCT6dY-6cAAAAAAAAAAAAADu3UAQ/original"
+                alt=""
+                className={styles["project-icon"]}
+              />
+            ) : (
+              <img
+                src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*EfbWTZEGfiIAAAAAAAAAAAAADu3UAQ/original"
+                alt=""
+                className={styles["project-icon"]}
+              />
+            )
+          }
           onChange={handleProjectChange}
         >
           {queryList.map((item) => {
@@ -181,9 +258,29 @@ export const ProjectSearch: React.FC<{
               : styles["warehouse-name"]
           }
           showSearch
-          popupClassName={defaultStyle ? "" : "warehouse"}
-          dropdownStyle={{ width: needFixed ? "calc(100% - 320px)" : "650px" }}
-          placeholder="请输入 GitHub 仓库名称"
+          suffixIcon={
+            defaultStyle ? (
+              <img
+                src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*MkcAToReggcAAAAAAAAAAAAADu3UAQ/original"
+                alt=""
+                className={styles["project-icon"]}
+              />
+            ) : (
+              <img
+                src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*GaLpTJ9UzUsAAAAAAAAAAAAADu3UAQ/original"
+                alt=""
+              />
+            )
+          }
+          popupClassName={defaultStyle ? "graph" : "warehouse"}
+          dropdownStyle={{
+            width: needFixed
+              ? "calc(100% - 320px)"
+              : defaultStyle
+              ? "400px"
+              : "650px",
+          }}
+          placeholder={placeholderValue}
           optionFilterProp="children"
           variant="borderless"
           onSearch={handelWarehouseSearch}

@@ -26,7 +26,7 @@ export const GraphView = React.memo(
     const containerRef = React.useRef(null);
     const graphRef = React.useRef<Graph>(null);
     const { nodes } = data;
-    const types = uniq(nodes.map((item) => item.nodeType));
+    const types = uniq(nodes?.map((item) => item.nodeType));
 
     const renderGraph = () => {
       const { clientHeight: height, clientWidth: width } = containerRef.current;

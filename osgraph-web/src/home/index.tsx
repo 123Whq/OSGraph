@@ -1,15 +1,37 @@
 /** @jsxImportSource @emotion/react */
-import { useTranslation } from "react-i18next";
 import styles from "./index.module.less";
 import { ProjectSearch } from "../components";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default () => {
-  const { t } = useTranslation();
   const [needFixed, setNeedFixed] = useState<boolean>(false);
+  const [templateType, setTemplateType] = useState<string>("REPO_CONTRIBUTE");
+
+  const switchType = (value: number) => {
+    if (value >= 980 && value <= 1580) {
+      return "REPO_CONTRIBUTE";
+    }
+    if (value >= 1580 && value <= 2260) {
+      return "REPO_ECOLOGY";
+    }
+    if (value >= 2260 && value <= 2940) {
+      return "REPO_COMMUNITY";
+    }
+    if (value >= 2940 && value <= 3620) {
+      return "ACCT_ACTIVITY";
+    }
+    if (value >= 3620 && value <= 4300) {
+      return "ACCT_PARTNER";
+    }
+    if (value >= 4300 && value <= 4980) {
+      return "ACCT_INTEREST";
+    }
+    return "REPO_CONTRIBUTE";
+  };
   useEffect(() => {
     window.onscroll = function () {
       const scrollTop = document.documentElement.scrollTop;
+      setTemplateType(switchType(scrollTop));
       if (scrollTop >= 600 && scrollTop <= 4300 && !needFixed) {
         setNeedFixed(true);
       } else if (scrollTop <= 600 || scrollTop >= 4300) {
@@ -39,7 +61,7 @@ export default () => {
             alt=""
             className={styles["title"]}
           />
-          <ProjectSearch needFixed={needFixed} />
+          <ProjectSearch needFixed={needFixed} templateType={templateType} />
           <div className={styles["tuGraph-icon"]}>
             <p>Powered by</p>
             <img
@@ -47,7 +69,7 @@ export default () => {
               alt=""
               className={styles["tuGraph-img"]}
             />
-            <a href="https://www.tugraph.org/">
+            <a href="https://www.tugraph.org/" target="_blank">
               <img
                 src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*4mhxQ6DQM2sAAAAAAAAAAAAADu3UAQ/original"
                 alt=""
@@ -61,13 +83,10 @@ export default () => {
         <div className={styles["project-body"]}>
           <div className={styles["title-left"]}>
             <div className={styles["project-info"]}>
-              <video
-                src="https://mass-office.alipay.com/huamei_koqzbu/afts/file/CaOrQa-q9EcAAAAAAAAAABAADnV5AQBr"
-                autoPlay
-                loop
-                muted
-                className={styles["info-video"]}
-              ></video>
+              <img
+                src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*kU6QRJfXtEQAAAAAAAAAAAAADu3UAQ/original"
+                alt=""
+              />
               <p className={styles["info-title"]}>项目贡献图谱</p>
             </div>
             <p className={styles["project-parse"]}>
@@ -92,13 +111,10 @@ export default () => {
 
           <div className={styles["title-right"]} style={{ marginLeft: 60 }}>
             <div className={styles["project-info"]}>
-              <video
-                src="https://mass-office.alipay.com/huamei_koqzbu/afts/file/CaOrQa-q9EcAAAAAAAAAABAADnV5AQBr"
-                autoPlay
-                loop
-                muted
-                className={styles["info-video"]}
-              ></video>
+              <img
+                src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*kU6QRJfXtEQAAAAAAAAAAAAADu3UAQ/original"
+                alt=""
+              />
               <p className={styles["info-title"]}>项目生态图谱</p>
             </div>
             <p className={styles["project-parse"]}>
@@ -111,13 +127,10 @@ export default () => {
         <div className={styles["project-body"]}>
           <div className={styles["title-left"]}>
             <div className={styles["project-info"]}>
-              <video
-                src="https://mass-office.alipay.com/huamei_koqzbu/afts/file/CaOrQa-q9EcAAAAAAAAAABAADnV5AQBr"
-                autoPlay
-                loop
-                muted
-                className={styles["info-video"]}
-              ></video>
+              <img
+                src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*kU6QRJfXtEQAAAAAAAAAAAAADu3UAQ/original"
+                alt=""
+              />
               <p className={styles["info-title"]}>项目社区图谱</p>
             </div>
             <p className={styles["project-parse"]}>
@@ -142,13 +155,10 @@ export default () => {
 
           <div className={styles["title-right"]} style={{ marginLeft: 60 }}>
             <div className={styles["project-info"]}>
-              <video
-                src="https://mass-office.alipay.com/huamei_koqzbu/afts/file/CaOrQa-q9EcAAAAAAAAAABAADnV5AQBr"
-                autoPlay
-                loop
-                muted
-                className={styles["info-video"]}
-              ></video>
+              <img
+                src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*kU6QRJfXtEQAAAAAAAAAAAAADu3UAQ/original"
+                alt=""
+              />
               <p className={styles["info-title"]}>开发活动图谱</p>
             </div>
             <p className={styles["project-parse"]}>
@@ -161,13 +171,10 @@ export default () => {
         <div className={styles["project-body"]}>
           <div className={styles["title-left"]}>
             <div className={styles["project-info"]}>
-              <video
-                src="https://mass-office.alipay.com/huamei_koqzbu/afts/file/CaOrQa-q9EcAAAAAAAAAABAADnV5AQBr"
-                autoPlay
-                loop
-                muted
-                className={styles["info-video"]}
-              ></video>
+              <img
+                src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*kU6QRJfXtEQAAAAAAAAAAAAADu3UAQ/original"
+                alt=""
+              />
               <p className={styles["info-title"]}>开源伙伴图谱</p>
             </div>
             <p className={styles["project-parse"]}>
@@ -191,13 +198,10 @@ export default () => {
 
           <div className={styles["title-right"]} style={{ marginLeft: 60 }}>
             <div className={styles["project-info"]}>
-              <video
-                src="https://mass-office.alipay.com/huamei_koqzbu/afts/file/CaOrQa-q9EcAAAAAAAAAABAADnV5AQBr"
-                autoPlay
-                loop
-                muted
-                className={styles["info-video"]}
-              ></video>
+              <img
+                src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*kU6QRJfXtEQAAAAAAAAAAAAADu3UAQ/original"
+                alt=""
+              />
               <p className={styles["info-title"]}>开源兴趣图谱</p>
             </div>
             <p className={styles["project-parse"]}>
@@ -208,7 +212,7 @@ export default () => {
       </div>
       <div className={styles["home-bottom"]}>
         <div className={styles["bottom-img"]}>
-          <a href="https://www.tugraph.org/">
+          <a href="https://www.tugraph.org/" target="_blank">
             <img
               src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*fFhhRqgrUNIAAAAAAAAAAAAADu3UAQ/original"
               alt=""
