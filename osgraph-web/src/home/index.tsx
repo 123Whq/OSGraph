@@ -3,6 +3,7 @@ import styles from "./index.module.less";
 import { ProjectSearch } from "../components";
 import { useEffect, useState } from "react";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export default () => {
   const [needFixed, setNeedFixed] = useState<boolean>(false);
   const [templateType, setTemplateType] = useState<string>("REPO_CONTRIBUTE");
@@ -30,11 +31,14 @@ export default () => {
   };
   useEffect(() => {
     window.onscroll = function () {
-      const scrollTop = document.documentElement.scrollTop;
+      const { scrollHeight, clientHeight, scrollTop } =
+        document.documentElement;
       setTemplateType(switchType(scrollTop));
-      if (scrollTop >= 600 && scrollTop <= 4300 && !needFixed) {
+      if (scrollTop >= 600 && !needFixed) {
         setNeedFixed(true);
-      } else if (scrollTop <= 600 || scrollTop >= 4300) {
+      }
+
+      if (scrollTop <= 600 || scrollHeight - clientHeight <= scrollTop + 1) {
         setNeedFixed(false);
       }
     };
@@ -64,18 +68,26 @@ export default () => {
           <ProjectSearch needFixed={needFixed} templateType={templateType} />
           <div className={styles["tuGraph-icon"]}>
             <p>Powered by</p>
-            <img
-              src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*fFhhRqgrUNIAAAAAAAAAAAAADu3UAQ/original"
-              alt=""
+            <div
               className={styles["tuGraph-img"]}
+              onClick={() => {
+                window.open("https://www.tugraph.tech/");
+              }}
             />
-            <a href="https://www.tugraph.org/" target="_blank">
-              <img
-                src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*4mhxQ6DQM2sAAAAAAAAAAAAADu3UAQ/original"
-                alt=""
-                className={styles["tuGraph-website"]}
-              />
-            </a>
+            <div className={styles["line"]} />
+            <div
+              className={styles["x-lab"]}
+              onClick={() => {
+                window.open("https://github.com/X-lab2017?language=shell");
+              }}
+            />
+          </div>
+          <div className={styles["text"]}>
+            <p>
+              探索GitHub开源图谱数据，洞察开发行为与社区生态。
+              如：贡献、伙伴、兴趣、社区、生态等...
+            </p>
+            <div className={styles["white-strip"]} />
           </div>
         </div>
       </div>
@@ -211,14 +223,20 @@ export default () => {
         </div>
       </div>
       <div className={styles["home-bottom"]}>
+        <img
+          src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*lchoQ4PxAVAAAAAAAAAAAAAADu3UAQ/original"
+          alt=""
+          className={styles["os-graph"]}
+        />
         <div className={styles["bottom-img"]}>
-          <a href="https://www.tugraph.org/" target="_blank">
-            <img
-              src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*fFhhRqgrUNIAAAAAAAAAAAAADu3UAQ/original"
-              alt=""
-              className={styles["tuGraph-url"]}
-            />
-          </a>
+          <div
+            className={styles["bottom-link"]}
+            onClick={() => {
+              window.open('"https://www.tugraph.org/"');
+            }}
+          >
+            <div className={styles["tuGraph-url"]} />
+          </div>
 
           <div
             className={styles["bottom-link"]}
@@ -226,10 +244,7 @@ export default () => {
               window.open("https://github.com/TuGraph-family/OSGraph");
             }}
           >
-            <img
-              src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*BnJ2TZbC8ckAAAAAAAAAAAAADu3UAQ/original"
-              alt=""
-            />
+            <div className={styles["gitHub-url"]} />
             <p>GitHub</p>
           </div>
 
@@ -239,10 +254,7 @@ export default () => {
               window.open("https://antv.antgroup.com/");
             }}
           >
-            <img
-              src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*kq9uSJJARtYAAAAAAAAAAAAADu3UAQ/original"
-              alt=""
-            />
+            <div className={styles["antv-url"]} />
             <p>AntV</p>
           </div>
         </div>

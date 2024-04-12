@@ -8,6 +8,7 @@ import Org from "../../assets/org.svg";
 import User from "../../assets/user.svg";
 import Country from "../../assets/country.svg";
 import Project from "../../assets/project.svg";
+import { isEmpty } from "lodash";
 
 const ICON_MAPPING = {
   organization: Org,
@@ -85,12 +86,14 @@ export const GraphView = React.memo(
     };
 
     React.useEffect(() => {
-      if (!containerRef.current) return;
-      renderGraph();
-      return () => {
-        if (graphRef.current) graphRef.current.destroy();
-      };
-    }, [containerRef.current]);
+      if (!isEmpty(data.nodes) && !isEmpty(data.edges)) {
+        if (!containerRef.current) return;
+        renderGraph();
+        return () => {
+          if (graphRef.current) graphRef.current.destroy();
+        };
+      }
+    }, [containerRef.current, data]);
 
     return <div ref={containerRef} style={{ height: "100%" }}></div>;
   },

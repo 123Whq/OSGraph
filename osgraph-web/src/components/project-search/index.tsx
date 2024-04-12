@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Select, ConfigProvider, theme, message } from "antd";
-import { DownOutlined } from "@ant-design/icons";
 import {
   getExecuteQueryTemplate,
   getExecuteFullTextQuery,
@@ -17,6 +16,8 @@ export const ProjectSearch: React.FC<{
   graphProjectValue?: string;
   graphQuerySource?: string;
   graphSearchValue?: string;
+  graphTemplateId?: string;
+  graphParameterList?: unknown[];
   defaultStyle?: boolean;
   onSearch?: (searchData: any) => void;
   templateType?: string | any;
@@ -30,6 +31,8 @@ export const ProjectSearch: React.FC<{
   graphProjectValue,
   graphQuerySource,
   graphSearchValue,
+  graphTemplateId,
+  graphParameterList,
 }) => {
   const navigate = useNavigate();
   const [queryList, setQueryList] = useState<any[]>([]);
@@ -43,11 +46,11 @@ export const ProjectSearch: React.FC<{
     placeholderValue: string;
     searchValue: string;
   }>({
-    querySource: graphQuerySource || "github_repo",
-    templateParameterList: [],
+    querySource: "github_repo",
+    templateParameterList: graphParameterList || [],
     textQuery: [],
     warehouseValue: graphWarehouseValue || null,
-    templateId: "",
+    templateId: graphTemplateId || "1",
     projectValue: graphProjectValue || "REPO_CONTRIBUTE",
     placeholderValue: "请输入 GitHub 仓库名称",
     searchValue: "",
@@ -181,24 +184,34 @@ export const ProjectSearch: React.FC<{
       ...state,
       warehouseValue: value,
     });
-
     const filterList = queryList?.filter(
       (item: { templateType: string }) =>
         item.templateType === "REPO_CONTRIBUTE"
     );
+    const templateList = handleJson(
+      isEmpty(templateParameterList)
+        ? filterList[0]?.templateParameterList
+        : templateParameterList,
+      value
+    );
+
+    const paramsValue = templateList
+      ?.map((item: { parameterValue: string }) => {
+        return item.parameterValue;
+      })
+      .join(",");
 
     getExecuteQueryTemplate({
       templateId: templateId || filterList[0]?.id,
-      templateParameterList: handleJson(
-        isEmpty(templateParameterList)
-          ? filterList[0]?.templateParameterList
-          : templateParameterList,
-        value
-      ),
+      templateParameterList: templateList,
     }).then((res) => {
       if (res?.success) {
         if (defaultStyle) {
-          onSearch?.(res.data);
+          onSearch?.({
+            searchData: res.data,
+            graphTemplateId: templateId,
+            graphParamsValue: paramsValue,
+          });
           return;
         }
         navigate("/result", {
@@ -208,6 +221,9 @@ export const ProjectSearch: React.FC<{
             projectValue,
             querySource,
             searchValue,
+            templateId,
+            paramsValue,
+            templateParameterList,
           },
         });
       } else {
@@ -269,20 +285,20 @@ export const ProjectSearch: React.FC<{
               : styles["warehouse-name"]
           }
           showSearch
-          suffixIcon={
-            defaultStyle ? (
-              <img
-                src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*MkcAToReggcAAAAAAAAAAAAADu3UAQ/original"
-                alt=""
-                className={styles["project-icon"]}
-              />
-            ) : (
-              <img
-                src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*GaLpTJ9UzUsAAAAAAAAAAAAADu3UAQ/original"
-                alt=""
-              />
-            )
-          }
+          // suffixIcon={
+          //   defaultStyle ? (
+          //     <img
+          //       src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*MkcAToReggcAAAAAAAAAAAAADu3UAQ/original"
+          //       alt=""
+          //       className={styles["project-icon"]}
+          //     />
+          //   ) : (
+          //     <img
+          //       src="https://mdn.alipayobjects.com/huamei_0bwegv/afts/img/A*GaLpTJ9UzUsAAAAAAAAAAAAADu3UAQ/original"
+          //       alt=""
+          //     />
+          //   )
+          // }
           popupClassName={defaultStyle ? "graph" : "warehouse"}
           dropdownStyle={{
             width: needFixed

@@ -12,3 +12,5 @@ export const NODE_COLORS = [
   "#2491B3",
   "#17C76F",
 ];
+export const HTTP_SERVICE_URL = `${window.location.protocol}//${window.location.hostname}:9000`;
+// export const HTTP_SERVICE_URL = `http://47.108.139.230:9000`;
